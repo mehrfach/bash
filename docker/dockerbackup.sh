@@ -2,7 +2,7 @@
 #
 # backup docker container(s) and volume to other host
 #
-source /root/dockerbackup.conf
+source dockerbackup.conf
 
 BACKUP_NAME='dockerbackup_daily'
 BACKUP_PATH='/root/dockerbackup/$BACKUP_NAME'
