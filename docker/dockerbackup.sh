@@ -65,7 +65,7 @@ if [[ -z $BACKUP_PATH ]]; then; echo "Variable BACKUP_PATH is missing in config 
 if [[ -z $BACKUP_HOST ]]; then; echo "Variable BACKUP_HOST is missing in config file."; exit; fi;
 if [[ -z $BACKUPSCRIPT_PATH ]]; then; echo "Variable BACKUPSCRIPT_PATH is missing in config file."; exit; fi;
 if [[ -z $BACKUPSCRIPT_FILENAME ]]; then; echo "Variable BACKUPSCRIPT_FILENAME is missing in config file."; exit; fi;
-
+exit;
 
 if [[ -z $1 ]] || [[ ("$1" != "backup") && ("$1" != "restore") ]]; then
         echo "Please choose option backup or restore as first argument"; exit
