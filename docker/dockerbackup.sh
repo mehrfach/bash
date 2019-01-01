@@ -2,13 +2,9 @@
 #
 # backup docker container(s) and volume to other host
 #
-source dockerbackup.conf
+if [[ ! -e dockerbackup.conf ]]; then echo "dockerbackup.conf file is missing"; exit; fi
 
-BACKUP_NAME='dockerbackup_daily'
-BACKUP_PATH='/root/dockerbackup/$BACKUP_NAME'
-BACKUP_HOST=''
-BACKUPSCRIPT_PATH='/root'
-BACKUPSCRIPT_FILENAME='dockerbackup.sh'
+source dockerbackup.conf
 
 function dorestore(){
 	for file in `ssh root@$BACKUP_HOST 'ls -f *.tar'`
