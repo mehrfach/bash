@@ -22,17 +22,16 @@ function dobackup(){
 
         echo $(docker ps) > $DOCKERPSFILE
         scp $DOCKERPSFILE root@$BACKUP_HOST:$BACKUP_PATH/$DOCKERPSFILE
-                rm -f $DOCKERPSFILE
+        rm -f $DOCKERPSFILE
 
         echo "Stopping container"
         docker stop $CONTAINER
 
-		VOLUME_EXISTS=$(docker inspect -f '{{ .Mounts }}' $CONTAINER)
-        
+	VOLUME_EXISTS=$(docker inspect -f '{{ .Mounts }}' $CONTAINER)
         if [ "[]" == "$VOLUME_EXISTS" ]; then
                 echo "No volume found, skipping."
         else
-				CONTAINERVOLUME=$(docker inspect -f '{{ (index .Mounts 0).Source }}' $CONTAINER)
+		CONTAINERVOLUME=$(docker inspect -f '{{ (index .Mounts 0).Source }}' $CONTAINER)
                 echo "Found volume: $CONTAINERVOLUME"
                 echo $CONTAINERVOLUME > $DOCKERVOLFILE
                 ssh root@$BACKUP_HOST "mkdir -p $BACKUP_PATH/volume/$CONTAINER/"
@@ -62,31 +61,28 @@ if [[ -z $BACKUP_HOST ]]; then echo "Variable BACKUP_HOST is missing in config f
 if [[ -z $BACKUPSCRIPT_PATH ]]; then echo "Variable BACKUPSCRIPT_PATH is missing in config file."; exit; fi
 if [[ -z $BACKUPSCRIPT_FILENAME ]]; then echo "Variable BACKUPSCRIPT_FILENAME is missing in config file."; exit; fi
 
-echo "finish here."
-exit;
-
 if [[ -z $1 ]] || [[ ("$1" != "backup") && ("$1" != "restore") ]]; then
         echo "Please choose option backup or restore as first argument"; exit
 fi
 
 if [[ "$1" == "backup" ]]; then
         if [[ -z $2 ]]; then
-						echo "Delete backup directory on remote machine"
-						ssh root@$BACKUP_HOST "rm -f -r $BACKUP_PATH/"
+		echo "Delete backup directory on remote machine"
+		ssh root@$BACKUP_HOST "rm -f -r $BACKUP_PATH/"
 
-						echo "Backup this script to remote host - validating remote host connection!"
-						ssh root@$BACKUP_HOST "mkdir -p $BACKUP_PATH/"
-						scp $BACKUPSCRIPT_PATH/$BACKUPSCRIPT_FILENAME root@$BACKUP_HOST:$BACKUP_PATH/$BACKUPSCRIPT_FILENAME
+		echo "Backup this script to remote host - validating remote host connection!"
+		ssh root@$BACKUP_HOST "mkdir -p $BACKUP_PATH/"
+		scp $BACKUPSCRIPT_PATH/$BACKUPSCRIPT_FILENAME root@$BACKUP_HOST:$BACKUP_PATH/$BACKUPSCRIPT_FILENAME
 		
-                        containers=$(sudo docker ps | awk '{if(NR>1) print $NF}')
-                        for containerName in $containers
-                        do
-                                        #echo "dobackup $containerName"
-                                        dobackup $containerName
-                                        echo ================================
-                        done
+                containers=$(sudo docker ps | awk '{if(NR>1) print $NF}')
+		for containerName in $containers
+		do
+			#echo "dobackup $containerName"
+			dobackup $containerName
+			echo ================================
+		done
         else
-                        dobackup $2
+		dobackup $2
         fi
 fi
 
